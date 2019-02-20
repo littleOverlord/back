@@ -4,7 +4,7 @@
  */
 /***** Module dependencies *****/
 //ni
-const log = require("../util");
+const log = require("../log");
 /***** Module variables *****/
 /***** Module exports *****/
 /**
@@ -29,7 +29,7 @@ exports.tryCatch = (callback,dontLog) => {
         callback();
     }catch(e){
         if(!dontLog){
-            log.add("error",e);
+            log.add(e,"error");
         }
     }
 }

@@ -8,6 +8,7 @@ const fs = require("fs");
 const http = require("http");
 const https = require("https");
 //ni
+const Util = require("../util");
 const router = require("../router");
 //config
 const cfg = require("./cfg.json");
@@ -21,7 +22,9 @@ class Start{
     static http(_cfg){
         const server = http.createServer((req, res) => {
             console.log(req.url);
-            router.response(req, res);
+            Util.tryCatch(()=>{
+                router.response(req, res);
+            });
         });
         server.on('clientError', (err, socket) => {
             socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
