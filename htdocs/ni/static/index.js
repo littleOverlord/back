@@ -24,7 +24,7 @@ class Static{
     static response(req, res){
         let u = url.parse(req.url),
             data = Static.caches.get(path.normalize(u.pathname));
-        if(data){
+        if(data !== undefined){
             setTimeout(()=>{
                 response(data, res, u);
             },0);
@@ -99,6 +99,7 @@ const readFile = (p,callback) => {
             return callback(err,data);
         }
         Static.caches.set(p,data);
+        console.log(Static.caches.keys());
         callback(err,data);
     });
     
@@ -119,8 +120,8 @@ const watchHandler = (dir) => {
         let p = path.join(dir,filename),
             file = path.normalize(p.replace(Static.root,"")),
             isdir;
-        console.log(eventType,p,file);
-        isdir = (eventType == "rename" && !Static.caches.get(file) && Static.dirCache[p]===undefined)?isDir(p):Static.dirCache[p] !== undefined;
+        // console.log(eventType,p,file);
+        isdir = (eventType == "rename" && Static.caches.get(file) === undefined && Static.dirCache[p]===undefined)?isDir(p):Static.dirCache[p] !== undefined;
         //判断是否文件
         if(isdir && eventType == "change"){
             return;
@@ -130,17 +131,16 @@ const watchHandler = (dir) => {
             return readDir(p.replace(Static.root,""));
         }
         if(eventType == "rename"){
-            if(Static.caches.get(file)){
+            if(Static.caches.get(file)!== undefined){
                 Static.caches.delete(file);
-                console.log(Static.caches.keys());
+                Static.dirCache[dir].splice(Static.dirCache[dir].indexOf(filename),1);
             }else if(isdir){
-                if(Static.watcher[p]){
-                    Static.watcher[p].close();
-                    delete Static.watcher[p];
-                }
-                delete Static.dirCache[p];
+                clearDir(p);
+            }else if(Static.dirCache[dir]!==undefined && Static.dirCache[dir].indexOf(filename) < 0){
+                Static.dirCache[dir].push(filename);
             }
         }
+        
         // _this.addTask(type,p.replace(_this.root,""));
         addWait(p.replace(Static.root,""))
     }
@@ -167,11 +167,22 @@ const runWait = () => {
 }
 //删除文件夹
 const clearDir = (dir) => {
-    let files = Static.dirCache[dir],p;
+    let files = Static.dirCache[dir],p,file;
+    if(Static.watcher[dir]){
+        Static.watcher[dir].close();
+        delete Static.watcher[dir];
+    }
+    delete Static.dirCache[dir];
+    // console.log(dir);
     for(let i = 0,len = files.length;i < len; i++){
-        p = path.join(dif,files[i]);
+        p = path.join(dir,files[i]);
+        file = path.normalize(p.replace(Static.root,""));
+        // console.log(p,file,typeof Static.caches.get(file));
         if(Static.dirCache[dir]){
             clearDir(p);
+        }else if(Static.caches.get(file) !== undefined){
+            Static.caches.delete(file);
+            console.log(i,Static.caches.size(),Static.caches.keys());
         }
     }
 }
