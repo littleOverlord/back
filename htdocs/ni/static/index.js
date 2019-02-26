@@ -63,6 +63,8 @@ const response = (data, res, u) => {
         contenttype = "text/plain";
         data = "404 Not found!!"
     }
+    // console.log("response");
+    // console.log(Static.caches.keys());
     // console.log(code,contenttype,data.toString("utf8"));
     res.writeHead(code,{"content-type":contenttype});
     res.write(data);
@@ -99,7 +101,8 @@ const readFile = (p,callback) => {
             return callback(err,data);
         }
         Static.caches.set(p,data);
-        console.log(Static.caches.keys());
+        // console.log("readFile");
+        // console.log(Static.caches.keys());
         callback(err,data);
     });
     
@@ -119,6 +122,8 @@ const watchHandler = (dir) => {
     return (eventType, filename) => {
         let p = path.join(dir,filename),
             file = path.normalize(p.replace(Static.root,"")),
+            prev,
+            index,
             isdir;
         // console.log(eventType,p,file);
         isdir = (eventType == "rename" && Static.caches.get(file) === undefined && Static.dirCache[p]===undefined)?isDir(p):Static.dirCache[p] !== undefined;
@@ -128,19 +133,33 @@ const watchHandler = (dir) => {
         }
         //新建文件夹
         if(isdir && Static.dirCache[p] == undefined){
+            Static.dirCache[dir].push(filename);
             return readDir(p.replace(Static.root,""));
         }
         if(eventType == "rename"){
+            
             if(Static.caches.get(file)!== undefined){
                 Static.caches.delete(file);
-                Static.dirCache[dir].splice(Static.dirCache[dir].indexOf(filename),1);
+                index = Static.dirCache[dir].indexOf(filename);
+                if(index >= 0){
+                    Static.dirCache[dir].splice(index,1);
+                }
+                // console.log("delete dir file",dir,filename,index);
             }else if(isdir){
+                prev = p.replace(file,"");
+                index = Static.dirCache[prev].indexOf(filename);
+                if(index >= 0){
+                    Static.dirCache[prev].splice(index,1);
+                }
+                // console.log("delete dir file",prev,filename,index);
                 clearDir(p);
             }else if(Static.dirCache[dir]!==undefined && Static.dirCache[dir].indexOf(filename) < 0){
                 Static.dirCache[dir].push(filename);
             }
         }
-        
+        // console.log(Static.dirCache);
+        // console.log(Static.caches);
+        // console.log(Static.watcher);
         // _this.addTask(type,p.replace(_this.root,""));
         addWait(p.replace(Static.root,""))
     }
@@ -173,7 +192,7 @@ const clearDir = (dir) => {
         delete Static.watcher[dir];
     }
     delete Static.dirCache[dir];
-    // console.log(dir);
+    
     for(let i = 0,len = files.length;i < len; i++){
         p = path.join(dir,files[i]);
         file = path.normalize(p.replace(Static.root,""));
@@ -182,9 +201,10 @@ const clearDir = (dir) => {
             clearDir(p);
         }else if(Static.caches.get(file) !== undefined){
             Static.caches.delete(file);
-            console.log(i,Static.caches.size(),Static.caches.keys());
+            console.log("delete",file);
         }
     }
+    // console.log(Static.caches.size);
 }
 /***** Module exports *****/
 module.exports = Static;
