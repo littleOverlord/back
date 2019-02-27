@@ -1,0 +1,27 @@
+{
+  "name": "back",
+  "version": "0.0.1",
+  "description": "web server",
+  "main": "htdocs/boot/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cd htdocs/boot && node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/littleOverlord/back.git"
+  },
+  "keywords": [
+    "nodejs",
+    "webserver"
+  ],
+  "author": "tangdandan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/littleOverlord/back/issues"
+  },
+  "homepage": "https://github.com/littleOverlord/back#readme",
+  "dependencies": {
+    "mongodb": "^3.1.13"
+  }
+}
