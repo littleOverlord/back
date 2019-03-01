@@ -12,7 +12,6 @@ const path = require("path");
 const NI = require("../index");
 const log = require("../log");
 //config
-const cfg = require("./cfg.json");
 const mime = require("./mime.json");
 
 /***** Module variables *****/
@@ -40,9 +39,20 @@ class Static{
             })
         }
     }
+    static init(cfg){
+        Static.config = cfg.static;
+        Static.root = NI.mergeAbs(cfg.static.dir);
+        //读取文件，缓存，同时添加文件监听
+        readDir("");
+        //设置文件更新循环
+        runWait();
+        console.log("static res is ok!!");
+    }
 }
+//配置
+Static.config;
 //静态资源根目录
-Static.root = NI.mergeAbs(cfg.dir);
+Static.root;
 //静态资源缓存表
 Static.caches = new Map();
 //监听缓存
@@ -55,7 +65,7 @@ Static.waitRead = [];
  * @description 解析url
  */
 const parseUrl = (u) => {
-    u = (u === "/" && cfg.default)?cfg.default:u;
+    u = (u === "/" && Static.config.default)?Static.config.default:u;
     return url.parse(u);
 }
 /**
@@ -220,7 +230,3 @@ const clearDir = (dir) => {
 /***** Module exports *****/
 module.exports = Static;
 /***** local running ******/
-//读取文件，缓存，同时添加文件监听
-readDir("");
-//设置文件更新循环
-runWait();

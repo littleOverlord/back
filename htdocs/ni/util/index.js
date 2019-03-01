@@ -5,7 +5,6 @@
  */
 /***** Module dependencies *****/
 //ni
-const log = require("../log");
 /***** Module variables *****/
 /***** Module exports *****/
 /**
@@ -29,11 +28,7 @@ exports.tryCatch = (callback,errorBack) => {
     try{
         callback();
     }catch(e){
-        if(!errorBack){
-            log.add(e,"error");
-        }else{
-            errorBack(e);
-        }
+        errorBack && errorBack(e);
     }
 }
 /***** local running ******/

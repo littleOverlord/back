@@ -1,3 +1,3 @@
 cd ../
-cd htdocs/boot
+cd htdocs/app
 node index.js

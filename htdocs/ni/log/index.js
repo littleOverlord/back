@@ -12,7 +12,6 @@ const fs = require('fs');
 const NI = require('../index');
 const util = require("../util");
 //config
-const cfg = require('./cfg.json');
 
 /***** Module variables *****/
 let root;
@@ -65,24 +64,25 @@ const add = (type,err) => {
     if(wait.length == 1)
         _write(wait[0]);
 }
+
+/***** Module exports *****/
 /**
  * @description set global error listener
  * @param {String}path log directory's path 
  * @example (1,"common/util.js") return "common/"
  */
-const init = () => {
-    root = NI.mergeAbs(cfg.dir);
-    console.log(root);
+exports.init = (cfg) => {
+    root = NI.mergeAbs(cfg.log.dir);
     //try to create the log dir, ignore error
     util.tryCatch(()=>{
         fs.mkdirSync(root);
-    },()=>{});
+    });
     
     process.on('uncaughtException', (err) => {
         add("error",err);
     });
+    console.log(`log init ok !! dir = ${root}`);
 };
-/***** Module exports *****/
 /**
  * @description add log interface
  */
@@ -96,5 +96,3 @@ exports.clientInfo = (code,msg) => {
     return `{"err":{"reson":"${msg}","code":${code}}}`;
 }
 /***** local running ******/
-
-init();

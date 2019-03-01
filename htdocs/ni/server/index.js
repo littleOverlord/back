@@ -13,7 +13,6 @@ const Util = require("../util");
 const router = require("../router");
 const log = require("../log");
 //config
-const cfg = require("./cfg.json");
 
 
 /***** Module variables *****/
@@ -48,9 +47,9 @@ class Start{
 /**
  * @description 启动http(s)服务器
  */
-exports.serverStart  = (callback) => {
-    for(let k in cfg){
-        Start[k] && Start[k](cfg[k]);
+exports.serverStart  = (cfg) => {
+    for(let k in cfg.server){
+        Start[k] && Start[k](cfg.server[k]);
     }
 }
 

@@ -2,10 +2,10 @@
   "name": "back",
   "version": "0.0.1",
   "description": "web server",
-  "main": "htdocs/boot/index.js",
+  "main": "htdocs/app/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cd htdocs/boot && node index.js"
+    "start": "cd htdocs/app && node index.js"
   },
   "repository": {
     "type": "git",

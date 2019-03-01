@@ -19,7 +19,7 @@ class NI{
     }
 }
 //项目绝对路径 .../htdocs/
-NI.absPath = process.cwd().replace("boot","");
+NI.absPath = process.cwd().replace("app","");
 /***** Module exports *****/
 module.exports = NI;
 /***** local running ******/
