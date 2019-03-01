@@ -1,5 +1,6 @@
-﻿/**
- * @description util Module.
+﻿'use strict';
+/**
+ * @description static res Module.
  * @private 
  */
 /***** Module dependencies *****/
@@ -9,10 +10,10 @@ const url = require("url");
 const path = require("path");
 //ni
 const NI = require("../index");
-
+const log = require("../log");
 //config
 const cfg = require("./cfg.json");
-const mime = require("./mime.json")
+const mime = require("./mime.json");
 
 /***** Module variables *****/
 class Static{
@@ -22,17 +23,19 @@ class Static{
      * @param {*} res 
      */
     static response(req, res){
-        let u = url.parse(req.url),
+        let u = parseUrl(req.url),
             data = Static.caches.get(path.normalize(u.pathname));
+        // console.log(u);
         if(data !== undefined){
             setTimeout(()=>{
                 response(data, res, u);
             },0);
         }else{
             readFile(u.pathname,(err,_data)=>{
-                if(err){
-                    console.log(err);
-                }
+                // if(err){
+                //     console.log(err);
+                //     console.log(_data);
+                // }
                 response(_data, res, u);
             })
         }
@@ -49,6 +52,13 @@ Static.dirCache = {};
 //修改缓存
 Static.waitRead = [];
 /**
+ * @description 解析url
+ */
+const parseUrl = (u) => {
+    u = (u === "/" && cfg.default)?cfg.default:u;
+    return url.parse(u);
+}
+/**
  * @description 资源响应
  * @param {*} data 
  * @param {*} res 
@@ -61,7 +71,7 @@ const response = (data, res, u) => {
     if(data === undefined){
         code = 404;
         contenttype = "text/plain";
-        data = "404 Not found!!"
+        data = log.clientInfo(400,`Not found ${u.pathname}`);
     }
     // console.log("response");
     // console.log(Static.caches.keys());
@@ -69,6 +79,7 @@ const response = (data, res, u) => {
     res.writeHead(code,{"content-type":contenttype});
     res.write(data);
     res.end();
+    // console.log(u.pathname);
 }
 
 //读取文件夹,创建目标文件夹

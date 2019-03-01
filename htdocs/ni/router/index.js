@@ -1,4 +1,5 @@
-﻿/**
+﻿'use strict';
+/**
  * @description Module dependencies.
  * @private 
  */
@@ -37,7 +38,7 @@ const matchHandler = (req, res) => {
         mod,
         handler;
     if(funcName){
-        mod = require(NI.mergeAbs(u.pathname)),
+        mod = require(NI.mergeAbs("."+u.pathname)),
         handler = mod?mod[funcName]:null;
         handler(req, res, search);
         return true;

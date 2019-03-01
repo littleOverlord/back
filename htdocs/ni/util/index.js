@@ -1,4 +1,5 @@
-﻿/**
+﻿'use strict';
+/**
  * @description util Module.
  * @private 
  */
@@ -24,12 +25,14 @@ exports.countCall = (count,callback) => {
 /**
  * @description 异常捕获
  */
-exports.tryCatch = (callback,dontLog) => {
+exports.tryCatch = (callback,errorBack) => {
     try{
         callback();
     }catch(e){
-        if(!dontLog){
+        if(!errorBack){
             log.add(e,"error");
+        }else{
+            errorBack(e);
         }
     }
 }

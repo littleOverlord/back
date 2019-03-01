@@ -1,4 +1,5 @@
-﻿/**
+﻿'use strict';
+/**
  * @description Module dependencies.
  * @private 
  */
@@ -69,13 +70,13 @@ const add = (type,err) => {
  * @param {String}path log directory's path 
  * @example (1,"common/util.js") return "common/"
  */
-init = () => {
+const init = () => {
     root = NI.mergeAbs(cfg.dir);
     console.log(root);
     //try to create the log dir, ignore error
     util.tryCatch(()=>{
         fs.mkdirSync(root);
-    },true);
+    },()=>{});
     
     process.on('uncaughtException', (err) => {
         add("error",err);
@@ -87,6 +88,12 @@ init = () => {
  */
 exports.add = (err,type) => {
     add(type||"error",err);
+}
+/**
+ * @description 创建往前台发送的错误消息
+ */
+exports.clientInfo = (code,msg) => {
+    return `{"err":{"reson":"${msg}","code":${code}}}`;
 }
 /***** local running ******/
 

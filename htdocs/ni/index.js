@@ -1,4 +1,5 @@
-﻿/**
+﻿'use strict';
+/**
  * @description project global module.
  * @private 
  */
@@ -13,6 +14,7 @@ class NI{
      * @param rPath 相对路径
      */
     static mergeAbs(rPath){
+        console.log(NI.absPath,rPath);
         return path.resolve(NI.absPath,rPath);
     }
 }

@@ -1,4 +1,5 @@
-﻿/**
+﻿'use strict';
+/**
  * @description http && https server Module.
  * @private 
  */
@@ -10,6 +11,7 @@ const https = require("https");
 //ni
 const Util = require("../util");
 const router = require("../router");
+const log = require("../log");
 //config
 const cfg = require("./cfg.json");
 
@@ -21,9 +23,13 @@ const cfg = require("./cfg.json");
 class Start{
     static http(_cfg){
         const server = http.createServer((req, res) => {
-            console.log(req.url);
             Util.tryCatch(()=>{
                 router.response(req, res);
+            },(error) => {
+                res.writeHead(500,{"content-type":"text/plain"});
+                res.write(log.clientInfo(500,error.message));
+                res.end();
+                log.add(error,"error");
             });
         });
         server.on('clientError', (err, socket) => {

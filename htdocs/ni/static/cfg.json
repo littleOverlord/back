@@ -1,3 +1,4 @@
 {
-    "dir":"static"
+    "dir":"static",
+    "default":"/index.html"
 }

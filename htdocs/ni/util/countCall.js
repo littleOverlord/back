@@ -1,4 +1,5 @@
-﻿/**
+﻿'use strict';
+/**
  * @description http && https server Module.
  * @private 
  */
