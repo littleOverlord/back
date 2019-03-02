@@ -33,7 +33,7 @@ class Router{
  */
 const matchHandler = (req, res) => {
     let u = url.parse(req.url),
-        search = params = new url.URLSearchParams(u.search),
+        search = new url.URLSearchParams(u.search),
         funcName = search.get("@"),
         mod,
         handler;

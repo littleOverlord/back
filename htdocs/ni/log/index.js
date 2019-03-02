@@ -30,7 +30,7 @@ const Log = (type,msg) => {
     let _d = new Date();
     return {
         date: _d.toString(),
-        name: `${_d.getFullYear()}-${_d.getMonth()}-${_d.getDate()}`,
+        name: `${_d.getFullYear()}-${_d.getMonth()+1}-${_d.getDate()}`,
         type: type,
         msg: msg
     };
