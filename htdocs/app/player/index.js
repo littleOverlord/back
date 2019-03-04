@@ -6,6 +6,7 @@
 /***** Module dependencies *****/
 const db = require("../../ni/db");
 const log = require("../../ni/log");
+const Util = require("../../ni/util");
 /***** Module variables *****/
 
 /***** Module exports *****/
@@ -20,9 +21,7 @@ exports.test = (req, res, search) => {
         }else{
             r = JSON.stringify(data);
         }
-        res.writeHead(c,{"content-type":"text/plain"});
-        res.write(r);
-        res.end();
+        Util.httpResponse(res,c,r);
     })
     
 }
@@ -38,13 +37,12 @@ exports.delete = (req, res, search) => {
             r = JSON.stringify(data.result);
         }
         console.log(data);
-        res.writeHead(c,{"content-type":"text/plain"});
-        res.write(r);
-        res.end();
+        Util.httpResponse(res,c,r);
     })
 }
 exports.performance = (req, res, search) => {
     let t = Date.now(),c = search.get("count"),d=0,
+        i = search.get("start") || 0,
         fn = search.get("method"),
         ms = ["insertOne","find","deleteOne"],
         func = () => {
@@ -60,7 +58,8 @@ exports.performance = (req, res, search) => {
                 return ms[2];
             }
         };
-    for(let i = c;i>0;i--){
+    console.log(i,c);
+    for(let len = c+i; i < len; i++){
         db[func()]("test",{value:i},(err,data)=>{
             if(err){
             console.log(err);
@@ -71,8 +70,6 @@ exports.performance = (req, res, search) => {
             }
         })
     }
-    res.writeHead(200,{"content-type":"text/plain"});
-    res.write("ok");
-    res.end();
+    Util.httpResponse(res,200,"ok");
   }
 /***** local running ******/

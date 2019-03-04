@@ -31,4 +31,13 @@ exports.tryCatch = (callback,errorBack) => {
         errorBack && errorBack(e);
     }
 }
+/**
+ * @description 响应http
+ * @param res http.
+ */
+exports.httpResponse = (res,code,data,contentType) => {
+    res.writeHead(code,{"content-type":contentType||"text/plain"});
+    res.write(data);
+    res.end();
+}
 /***** local running ******/
