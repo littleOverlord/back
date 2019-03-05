@@ -89,6 +89,28 @@ exports.find = (document,data,callback) => {
   });
 }
 /**
+ * @description 查找单条数据
+ * @param {string} document 数据库表名
+ * @param {json} data 查找数据的条件
+ * @param {Function} callback 数据操作完的回调
+ */
+exports.findOne = (document,data,callback) => {
+  connect((db)=>{
+    db.collection(document).findOne(data,(err,result)=>{
+      if(err){
+        return callback(err,result);
+      }
+      Util.tryCatch(()=>{
+        result.toArray((error, docs)=>{
+          callback(error,docs);
+        })
+      },(error)=>{
+        log.add(error,"error");
+      })
+    })
+  });
+}
+/**
  * @description 批量更新数据
  * @param {string} document 数据库表名
  * @param {json} filter 需要修改的数据查找条件
