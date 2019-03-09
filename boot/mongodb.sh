@@ -2,7 +2,7 @@
 # 配置
 ###
 basepath=$(pwd)
-basepath=${basepath%back*}
+basepath=${basepath%boot*}
 #数据库数据存放目录
 dbpath=""
 #数据库日志存放目录
@@ -19,9 +19,8 @@ if [ ! -d "db" ];
 then
 sudo mkdir db
 fi
-dbpath="${basepath}back/db"
+dbpath="${basepath}/db"
 # 检查创建db log目录
-cd ../
 if [ ! -d "log" ];
 then
 sudo mkdir log
