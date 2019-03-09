@@ -20,6 +20,6 @@
         "default":"/index.html"
     },
     "log" : {
-        "dir":"log"
+        "dir":"../log"
     } 
 }
