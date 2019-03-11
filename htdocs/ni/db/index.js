@@ -37,7 +37,7 @@ exports.init = (cfg) => {
     dbName = cfg.app.name;
     dbUrl = cfg.db.url;
 
-    client = new MongoClient(dbUrl);
+    client = new MongoClient(dbUrl,{useNewUrlParser:true});
     client.connect(function(err) {
         if(err){
           return log.add(err,"mongodb");
