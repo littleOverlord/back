@@ -1,3 +1,4 @@
 /node_modules/
-/htdocs/log/
+/log/
+/db/
 /htdocs/static/*
