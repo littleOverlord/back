@@ -7,8 +7,8 @@
             "port":9800
         },
         "https":{
-            "key":"../ni/key/tulong.xianquyouxi.com_key.txt",
-            "crt":"../ni/key/tulong.xianquyouxi.com_ssl.crt",
+            "key":"ni/server/key/tulong.xianquyouxi.com_key.txt",
+            "crt":"ni/server/key/tulong.xianquyouxi.com_ssl.crt",
             "port": 443
         }
     },
