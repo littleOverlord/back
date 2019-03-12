@@ -22,7 +22,7 @@ const log = require("../log");
  */
 class Start{
     static http(_cfg){
-        create(https,{},_cfg.port);  
+        create(http,{},_cfg.port);  
     }
     static https(_cfg){
         const options = {
