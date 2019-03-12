@@ -4,7 +4,7 @@
     },
    "server":{
         "http":{
-            "port":9800
+            "port":80
         },
         "https":{
             "key":"ni/server/key/tulong.xianquyouxi.com_key.txt",
