@@ -8,6 +8,7 @@
 const fs = require("fs");
 const url = require("url");
 const path = require("path");
+const zlib = require('zlib');
 //ni
 const NI = require("../index");
 const log = require("../log");
@@ -24,20 +25,21 @@ class Static{
     static response(req, res){
         let u = parseUrl(req.url),
             data = Static.caches.get(path.normalize(u.pathname));
-        // console.log(u);
-        if(data !== undefined){
-            setTimeout(()=>{
-                response(data, res, u);
-            },0);
-        }else{
+        console.log(req.url);
+        console.log(req.headers);
+        // if(data !== undefined){
+        //     setTimeout(()=>{
+        //         response(data, req, res, u);
+        //     },0);
+        // }else{
             readFile(u.pathname,(err,_data)=>{
                 // if(err){
                 //     console.log(err);
                 //     console.log(_data);
                 // }
-                response(_data, res, u);
+                response(_data, req, res, u);
             })
-        }
+        // }
     }
     static init(cfg){
         Static.config = cfg.static;
@@ -74,21 +76,42 @@ const parseUrl = (u) => {
  * @param {*} res 
  * @param {*} u 
  */
-const response = (data, res, u) => {
+const response = (data, req, res, u) => {
     let ext=path.extname(u.pathname),
-        contenttype=mime[ext]||"text/plain",
+        acceptEncoding = req.headers["accept-encoding"],
+        header = {"Content-Type":req.headers["content-type"] || mime[ext]||"text/plain","Access-Control-Allow-Origin": "*"},
+        output,
         code = 200;
     if(data === undefined){
         code = 404;
-        contenttype = "text/plain";
+        header["Content-Type"] = "text/plain";
         data = log.clientInfo(400,`Not found ${u.pathname}`);
     }
     // console.log("response");
     // console.log(Static.caches.keys());
     // console.log(code,contenttype,data.toString("utf8"));
-    res.writeHead(code,{"content-type":contenttype});
-    res.write(data);
-    res.end();
+    // if (/\bdeflate\b/.test(acceptEncoding)) {
+    //     header['Content-Encoding'] = 'deflate';
+    //     output = zlib.createDeflate();
+    //   } else if (/\bgzip\b/.test(acceptEncoding)) {
+    //     header['Content-Encoding'] ='gzip';
+    //     output = zlib.createGzip();
+    //   } else {
+    console.log(header,Buffer.byteLength(data));
+    header["Content-Length"] = Buffer.byteLength(data);
+    res.writeHead(code, header);
+    res.end(data);
+    //   }
+    // if(output){
+    //     res.writeHead(code,header);
+    //     output.pipe(res);
+    //     output.write(data,() => {
+    //         output.flush();
+    //     });
+    //     output.end();
+    // }
+    
+    // output.end();
     // console.log(u.pathname);
 }
 
@@ -117,7 +140,7 @@ const readDir = (dir) => {
 const readFile = (p,callback) => {
     let ap = path.join(Static.root,p);
     // console.log("readfile ", p, ap);
-    fs.readFile(ap,(err, data)=>{
+    fs.readFile(ap,"utf8",(err, data)=>{
         if(err){
             return callback(err,data);
         }
