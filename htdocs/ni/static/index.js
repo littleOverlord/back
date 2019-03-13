@@ -81,7 +81,14 @@ const response = (data, req, res, u) => {
         acceptEncoding = req.headers["accept-encoding"],
         header = {"Content-Type":req.headers["content-type"] || mime[ext]||"text/plain","Access-Control-Allow-Origin": "*"},
         output,
-        code = 200;
+        code = 200,
+        resWrite = (r) => {
+            // console.log(Buffer.isBuffer(r));
+            header["Content-Length"] = Buffer.byteLength(r);
+            res.writeHead(code, header);
+            res.end(r,"binary");
+            // console.log(header);
+        };
     if(data === undefined){
         code = 404;
         header["Content-Type"] = "text/plain";
@@ -90,27 +97,26 @@ const response = (data, req, res, u) => {
     // console.log("response");
     // console.log(Static.caches.keys());
     // console.log(code,contenttype,data.toString("utf8"));
-    // if (/\bdeflate\b/.test(acceptEncoding)) {
-    //     header['Content-Encoding'] = 'deflate';
-    //     output = zlib.createDeflate();
-    //   } else if (/\bgzip\b/.test(acceptEncoding)) {
-    //     header['Content-Encoding'] ='gzip';
-    //     output = zlib.createGzip();
-    //   } else {
-    console.log(header,Buffer.byteLength(data));
-    header["Content-Length"] = Buffer.byteLength(data);
-    res.writeHead(code, header);
-    res.end(data);
-    //   }
-    // if(output){
-    //     res.writeHead(code,header);
-    //     output.pipe(res);
-    //     output.write(data,() => {
-    //         output.flush();
-    //     });
-    //     output.end();
-    // }
-    
+    // console.log(Buffer.isBuffer(data));
+    if (acceptEncoding && acceptEncoding.indexOf("deflate")===0) {
+        header['Content-Encoding'] = 'deflate';
+        output = zlib.deflate;
+      } else if (acceptEncoding && acceptEncoding.indexOf("gzip")===0) {
+        header['Content-Encoding'] ='gzip';
+        output = zlib.gzip;
+      } else {
+        resWrite(data);
+      }
+    if(output){
+        output(data,(err,r)=>{
+            console.log(`gzip ${u.pathname} is ${1 - Buffer.byteLength(r)/Buffer.byteLength(data)}`);
+            if(err){
+                console.log(err);
+                return resWrite(data);
+            }
+            resWrite(r);
+        })
+    }
     // output.end();
     // console.log(u.pathname);
 }
@@ -140,7 +146,7 @@ const readDir = (dir) => {
 const readFile = (p,callback) => {
     let ap = path.join(Static.root,p);
     // console.log("readfile ", p, ap);
-    fs.readFile(ap,"utf8",(err, data)=>{
+    fs.readFile(ap,(err, data)=>{
         if(err){
             return callback(err,data);
         }
@@ -154,7 +160,8 @@ const readFile = (p,callback) => {
 //同步读取文件
 const readFileSync = (p) => {
     let ap = path.join(Static.root,p),
-        data = fs.readFileSync(ap,"utf8");
+        data = fs.readFileSync(ap);
+    // console.log(ap,typeof data,Buffer.isBuffer(data))
     Static.caches.set(p,data);
 }
 //判断是否文件夹
