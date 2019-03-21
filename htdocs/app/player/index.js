@@ -72,4 +72,7 @@ exports.performance = (req, res, search) => {
     }
     Util.httpResponse(res,200,"ok");
   }
+exports.readall = (req, res, search) => {
+
+}
 /***** local running ******/
