@@ -11,6 +11,7 @@ const Client = require("../../ni/client");
 const db = require("../../ni/db");
 const log = require("../../ni/log");
 const Util = require("../../ni/util");
+const Session = require("../../ni/session");
 //config
 const config = require("./cfg.json");
 /***** Module variables *****/
@@ -24,14 +25,40 @@ const code2Session = (code,callback) => {
         callback(error,data);
     });
 }
+const addSession = (data, res) => {
+    Session.add({
+        session_wx: data.session_key,
+        openid: data.openid,
+        uid: data.unionid
+    });
+    Util.httpResponse(res,200,`{"ok":{"uid":${data.unionid}}}`);
+}
 /***** Module exports *****/
-exports.login = (rq,res,serch) => {
-    const code = serch.get("code");
+exports.login = (rq,res,search) => {
+    const code = search.get("code"),
+        info = search.get("info");
     code2Session(code,(error,data)=>{
         if(error){
-            return Util.httpResponse(res,200,log.clientInfo(200,error.message));
+            return Util.httpResponse(res,500,log.clientInfo(500,error.message));
         }
         data = JSON.parse(data);
+        if(data.errcode){
+            return Util.httpResponse(res,500,log.clientInfo(500,data.errmsg));
+        }
+        db.findOne("user",{uid:data.unionid},(err,result)=>{
+            if(err){
+                return Util.httpResponse(res,500,log.clientInfo(500,err.message));
+            }
+            if(!result){
+                return db.insertOne("user",{uid:data.unionid,from:"wx",info:info},(e,r)=>{
+                    if(e){
+                        return Util.httpResponse(res,500,log.clientInfo(500,e.message));
+                    }
+                    addSession(data,res);
+                })
+            }
+            addSession(data,res);
+        })
     })
 }
 /***** local running ******/

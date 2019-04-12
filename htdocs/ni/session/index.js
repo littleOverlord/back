@@ -47,6 +47,10 @@ class Session{
      */
     uid = 0
     /**
+     * @description 微信的会话密钥
+     */
+    session_wx = ""
+    /**
      * @description 刷新成新的session
      */
     fresh = (options) => {
