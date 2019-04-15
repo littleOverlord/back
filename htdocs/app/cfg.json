@@ -4,7 +4,7 @@
     },
    "server":{
         "http":{
-            "port":8018
+            "port":80
         },
         "https":{
             "key":"ni/server/key/1916692_tulong.xianquyouxi.com.key",
