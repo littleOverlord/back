@@ -25,8 +25,8 @@ class Static{
     static response(req, res){
         let u = parseUrl(req.url),
             data = Static.caches.get(path.normalize(u.pathname));
-        console.log(req.url);
-        console.log(req.headers);
+        // console.log(req.url);
+        // console.log(req.headers);
         // if(data !== undefined){
         //     setTimeout(()=>{
         //         response(data, req, res, u);
@@ -109,7 +109,7 @@ const response = (data, req, res, u) => {
       }
     if(output){
         output(data,(err,r)=>{
-            console.log(`gzip ${u.pathname} is ${1 - Buffer.byteLength(r)/Buffer.byteLength(data)}`);
+            // console.log(`gzip ${u.pathname} is ${1 - Buffer.byteLength(r)/Buffer.byteLength(data)}`);
             if(err){
                 console.log(err);
                 return resWrite(data);
