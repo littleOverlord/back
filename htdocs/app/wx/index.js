@@ -30,8 +30,7 @@ const code2Session = (code,callback) => {
 const addSession = (data, res) => {
     Session.add({
         session_wx: data.session_key,
-        openid: data.openid,
-        uid: data.unionid
+        uid: data.openid
     });
     Util.httpResponse(res,200,`{"ok":{"uid":${data.unionid}}}`);
 }

@@ -45,7 +45,7 @@ class Session{
     /**
      * @description 用户id
      */
-    // uid = 0
+    // uid = ""
     /**
      * @description 微信的会话密钥
      */
