@@ -23,7 +23,7 @@ const WXBizDataCrypt = require('./WXBizDataCrypt')
  */
 const code2Session = (code,callback) => {
     Client.get(`https://api.weixin.qq.com/sns/jscode2session?appid=${config.appId}&secret=${config.appSecret}&js_code=${code}&grant_type=authorization_code`,(error,data) => {
-        console.log(data);
+        
         callback(error,data);
     });
 }
@@ -51,6 +51,7 @@ exports.login = (rq,res,search) => {
         }
         pc = new WXBizDataCrypt(config.appId, data.sessionKey);
         data = pc.decryptData(encrypted , iv);
+        console.log(data);
         db.findOne("user",{uid:data.unionid},(err,result)=>{
             if(err){
                 return Util.httpResponse(res,500,log.clientInfo(500,err.message));
