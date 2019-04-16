@@ -13,7 +13,7 @@ const log = require("../../ni/log");
 const Util = require("../../ni/util");
 const Session = require("../../ni/session");
 //config
-const config = require("./cfg.json");
+const config = require("./config.json");
 /***** Module variables *****/
 /**
  * @description 向微信服务器索取登录信息
