@@ -14,6 +14,7 @@ const Util = require("../../ni/util");
 const Session = require("../../ni/session");
 //config
 const config = require("./config.json");
+const WXBizDataCrypt = require('./WXBizDataCrypt')
 /***** Module variables *****/
 /**
  * @description 向微信服务器索取登录信息
@@ -37,8 +38,9 @@ const addSession = (data, res) => {
 /***** Module exports *****/
 exports.login = (rq,res,search) => {
     const code = search.get("code"),
-        name = search.get("name"),
-        head = search.get("head");
+        encrypted = search.get("encrypted"),
+        iv = search.get("iv"),
+        pc;
     code2Session(code,(error,data)=>{
         if(error){
             return Util.httpResponse(res,500,log.clientInfo(500,error.message));
@@ -47,12 +49,14 @@ exports.login = (rq,res,search) => {
         if(data.errcode){
             return Util.httpResponse(res,500,log.clientInfo(500,data.errmsg));
         }
+        pc = new WXBizDataCrypt(config.appId, data.sessionKey);
+        data = pc.decryptData(encrypted , iv);
         db.findOne("user",{uid:data.unionid},(err,result)=>{
             if(err){
                 return Util.httpResponse(res,500,log.clientInfo(500,err.message));
             }
             if(!result){
-                return db.insertOne("user",{uid:data.unionid,from:"wx",name,head,openid:data.openid},(e,r)=>{
+                return db.insertOne("user",{uid:data.unionid,from:"wx",name,head,openid:data.openid,info:data},(e,r)=>{
                     if(e){
                         return Util.httpResponse(res,500,log.clientInfo(500,e.message));
                     }
