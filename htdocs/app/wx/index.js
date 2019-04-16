@@ -37,7 +37,8 @@ const addSession = (data, res) => {
 /***** Module exports *****/
 exports.login = (rq,res,search) => {
     const code = search.get("code"),
-        info = search.get("info");
+        name = search.get("name"),
+        head = search.get("head");
     code2Session(code,(error,data)=>{
         if(error){
             return Util.httpResponse(res,500,log.clientInfo(500,error.message));
@@ -51,7 +52,7 @@ exports.login = (rq,res,search) => {
                 return Util.httpResponse(res,500,log.clientInfo(500,err.message));
             }
             if(!result){
-                return db.insertOne("user",{uid:data.unionid,from:"wx",info:info},(e,r)=>{
+                return db.insertOne("user",{uid:data.unionid,from:"wx",name,head,openid:data.openid},(e,r)=>{
                     if(e){
                         return Util.httpResponse(res,500,log.clientInfo(500,e.message));
                     }
