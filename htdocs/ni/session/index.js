@@ -53,7 +53,7 @@ class Session{
     /**
      * @description 刷新成新的session
      */
-    fresh = (options) => {
+    fresh(options){
         for(let k in options){
             this[k] = options[k];
         }
@@ -65,7 +65,7 @@ class Session{
     /**
      * @description 更新session
      */
-    update = () => {
+    update(){
         this.expire = Date.now() + LASTTIME;
     }
 }
