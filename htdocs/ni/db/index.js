@@ -100,13 +100,13 @@ exports.findOne = (document,data,callback) => {
       if(err){
         return callback(err,result);
       }
-      Util.tryCatch(()=>{
-        result.toArray((error, docs)=>{
-          callback(error,docs);
-        })
-      },(error)=>{
-        log.add(error,"error");
-      })
+      // Util.tryCatch(()=>{
+      //   result.toArray((error, docs)=>{
+          callback(err,result);
+      //   })
+      // },(error)=>{
+      //   log.add(error,"error");
+      // })
     })
   });
 }
