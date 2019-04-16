@@ -5,7 +5,7 @@
  */
 /***** Module dependencies *****/
 //node js
-const http = require("http");
+const url = require("url");
 //ni
 const log = require("../log");
 const Util = require("../util");
@@ -16,8 +16,12 @@ class Client{
      * @param {string} url 请求链接
      * @param {Function} callback (error,data)=>{} 请求回调
      */
-    static httpGet(url, callback){
-        http.get(url,(res) => {
+    static get(_url, callback){
+        let pu = url.parse(_url),
+            mn = pu.protocol.replace(":",""),
+            mod = require(mn);
+
+        mod.get(_url,(res) => {
             const { statusCode } = res;
           
             let error,rawData = '';

@@ -21,7 +21,7 @@ const config = require("./config.json");
  * @param {*} callback 
  */
 const code2Session = (code,callback) => {
-    Client.httpGet(`https://api.weixin.qq.com/sns/jscode2session?appid=${config.appId}&secret=${config.appSecret}&js_code=${code}&grant_type=authorization_code`,(error,data) => {
+    Client.get(`https://api.weixin.qq.com/sns/jscode2session?appid=${config.appId}&secret=${config.appSecret}&js_code=${code}&grant_type=authorization_code`,(error,data) => {
         console.log(data);
         callback(error,data);
     });
