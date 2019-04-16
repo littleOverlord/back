@@ -39,8 +39,8 @@ const addSession = (data, res) => {
 exports.login = (rq,res,search) => {
     const code = search.get("code"),
         encrypted = search.get("encrypted"),
-        iv = search.get("iv"),
-        pc;
+        iv = search.get("iv");
+    let pc;
     code2Session(code,(error,data)=>{
         if(error){
             return Util.httpResponse(res,500,log.clientInfo(500,error.message));
