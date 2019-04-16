@@ -39,7 +39,7 @@ const matchHandler = (req, res) => {
         handler;
     if(funcName){
         mod = require(NI.mergeAbs("."+u.pathname)),
-        handler = mod?mod[funcName]:null;
+        handler = mod[funcName];
         handler(req, res, search);
         return true;
     }

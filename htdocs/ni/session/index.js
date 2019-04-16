@@ -37,19 +37,19 @@ class Session{
     /**
      * @description session 唯一标识
      */
-    sessionKey = ""
+    // sessionKey = ""
     /**
      * @description session过期时间,过期后需要前台用户重登录才能更新
      */
-    expire = Date.now() + LASTTIME
+    // expire = Date.now() + LASTTIME
     /**
      * @description 用户id
      */
-    uid = 0
+    // uid = 0
     /**
      * @description 微信的会话密钥
      */
-    session_wx = ""
+    // session_wx = ""
     /**
      * @description 刷新成新的session
      */
@@ -60,6 +60,7 @@ class Session{
         if(!this.sessionKey){
             this.sessionKey = md5((Date.now()).toString()+this.uid.toString());
         }
+        this.expire = Date.now() + LASTTIME;
     }
     /**
      * @description 更新session
