@@ -52,19 +52,19 @@ exports.login = (rq,res,search) => {
         // console.log(encrypted,iv);
         pc = new WXBizDataCrypt(config.appId, data.session_key);
         data = pc.decryptData(encrypted , iv);
-        db.findOne("user",{uid:data.unionid},(err,result)=>{
+        db.findOne("user",{uid:data.openId},(err,result)=>{
             if(err){
                 return Util.httpResponse(res,500,log.clientInfo(500,err.message));
             }
             if(!result){
-                return db.insertOne("user",{uid:data.unionid,from:"wx",name,head,openid:data.openid,info:data},(e,r)=>{
+                return db.insertOne("user",{uid:data.openId,from:"wx",name:data.nickName,head:data.avatarUrl,info:data},(e,r)=>{
                     if(e){
                         return Util.httpResponse(res,500,log.clientInfo(500,e.message));
                     }
-                    addSession(data,res);
+                    addSession(r,res);
                 })
             }
-            addSession(data,res);
+            addSession(result,res);
         })
     })
 }
