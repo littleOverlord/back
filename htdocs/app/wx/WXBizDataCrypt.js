@@ -10,17 +10,19 @@ WXBizDataCrypt.prototype.decryptData = function (encryptedData, iv) {
   var sessionKey = Buffer.from(this.sessionKey, 'base64')
   encryptedData = Buffer.from(encryptedData, 'base64')
   iv = Buffer.from(iv, 'base64')
-  console.log(this.sessionKey);
-  console.log(encryptedData);
+  console.log("======================");
   try {
      // 解密
     var decipher = crypto.createDecipheriv('aes-128-cbc', sessionKey, iv)
+    console.log(decipher)
     // 设置自动 padding 为 true，删除填充补位
     decipher.setAutoPadding(true)
     var decoded = decipher.update(encryptedData, 'binary', 'utf8')
+    console.log(decoded)
     decoded += decipher.final('utf8')
-    
+    console.log(decoded)
     decoded = JSON.parse(decoded)
+    console.log(decoded)
 
   } catch (err) {
     throw new Error('Illegal Buffer')
