@@ -34,11 +34,11 @@ const code2Session = (code,callback) => {
  * @param {*} res 
  */
 const addSession = (data, result, res) => {
-    Session.add({
+    let s = Session.add({
         session_wx: data.session_key,
         uid: data.openid
     });
-    Util.httpResponse(res,200,`{"ok":${JSON.stringify(result)}}`);
+    Util.httpResponse(res,200,`{"":${s.sessionKey},"ok":${JSON.stringify(result)}}`);
 }
 const findUser = (res, data, notCallback) => {
     db.findOne("user",{uid:data.openid},(err,result)=>{
