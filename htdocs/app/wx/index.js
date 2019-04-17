@@ -66,7 +66,6 @@ exports.login = (rq,res,search) => {
         if(data.errcode){
             return Util.httpResponse(res,500,log.clientInfo(500,data.errmsg));
         }
-        console.log(data);
         findUser(res,data,()=>{
             // console.log(encrypted,iv);
             pc = new WXBizDataCrypt(config.appId, data.session_key);
