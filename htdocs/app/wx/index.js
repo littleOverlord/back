@@ -27,12 +27,30 @@ const code2Session = (code,callback) => {
         callback(error,data);
     });
 }
+/**
+ * @description 添加session
+ * @param {*} data 
+ * @param {*} result 
+ * @param {*} res 
+ */
 const addSession = (data, result, res) => {
     Session.add({
         session_wx: data.session_key,
-        uid: data.openid
+        uid: data.openId
     });
     Util.httpResponse(res,200,`{"ok":${JSON.stringify(result)}}`);
+}
+const findUser = (res, data, notCallback) => {
+    db.findOne("user",{uid:data.openId},(err,result)=>{
+        if(err){
+            return Util.httpResponse(res,500,log.clientInfo(500,err.message));
+        }
+        if(result){
+            addSession(data,result,res);
+        }else{
+            notCallback();
+        }
+    });
 }
 /***** Module exports *****/
 exports.login = (rq,res,search) => {
@@ -48,22 +66,16 @@ exports.login = (rq,res,search) => {
         if(data.errcode){
             return Util.httpResponse(res,500,log.clientInfo(500,data.errmsg));
         }
-        // console.log(encrypted,iv);
-        pc = new WXBizDataCrypt(config.appId, data.session_key);
-        data = pc.decryptData(encrypted , iv);
-        db.findOne("user",{uid:data.openId},(err,result)=>{
-            if(err){
-                return Util.httpResponse(res,500,log.clientInfo(500,err.message));
-            }
-            if(!result){
-                return db.insertOne("user",{uid:data.openId,from:"wx",name:data.nickName,head:data.avatarUrl,info:data},(e,r)=>{
-                    if(e){
-                        return Util.httpResponse(res,500,log.clientInfo(500,e.message));
-                    }
-                    addSession(data,r,res);
-                })
-            }
-            addSession(data,result,res);
+        findUser(res,data,()=>{
+            // console.log(encrypted,iv);
+            pc = new WXBizDataCrypt(config.appId, data.session_key);
+            let _data = pc.decryptData(encrypted , iv);
+            db.insertOne("user",{uid:_data.openId,from:"wx",name:_data.nickName,head:_data.avatarUrl,info:_data},(e,r)=>{
+                if(e){
+                    return Util.httpResponse(res,500,log.clientInfo(500,e.message));
+                }
+                addSession(data,r,res);
+            })
         })
     })
 }
