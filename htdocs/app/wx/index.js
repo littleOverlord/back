@@ -27,12 +27,12 @@ const code2Session = (code,callback) => {
         callback(error,data);
     });
 }
-const addSession = (data, res) => {
+const addSession = (data, result, res) => {
     Session.add({
         session_wx: data.session_key,
         uid: data.openid
     });
-    Util.httpResponse(res,200,`{"ok":{"uid":${data.unionid}}}`);
+    Util.httpResponse(res,200,`{"ok":${JSON.stringify(result)}}`);
 }
 /***** Module exports *****/
 exports.login = (rq,res,search) => {
@@ -60,10 +60,10 @@ exports.login = (rq,res,search) => {
                     if(e){
                         return Util.httpResponse(res,500,log.clientInfo(500,e.message));
                     }
-                    addSession(r,res);
+                    addSession(data,r,res);
                 })
             }
-            addSession(result,res);
+            addSession(data,result,res);
         })
     })
 }
