@@ -36,12 +36,12 @@ const code2Session = (code,callback) => {
 const addSession = (data, result, res) => {
     Session.add({
         session_wx: data.session_key,
-        uid: data.openId
+        uid: data.openid
     });
     Util.httpResponse(res,200,`{"ok":${JSON.stringify(result)}}`);
 }
 const findUser = (res, data, notCallback) => {
-    db.findOne("user",{uid:data.openId},(err,result)=>{
+    db.findOne("user",{uid:data.openid},(err,result)=>{
         if(err){
             return Util.httpResponse(res,500,log.clientInfo(500,err.message));
         }
