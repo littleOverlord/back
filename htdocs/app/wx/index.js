@@ -29,9 +29,9 @@ const code2Session = (code,callback) => {
 }
 /**
  * @description 添加session
- * @param {*} data 
- * @param {*} result 
- * @param {*} res 
+ * @param { JSON } data 微信解密数据
+ * @param { JSON } result 数据库存储的数据
+ * @param { Response } res 
  */
 const addSession = (data, result, res) => {
     let s = Session.add({
@@ -40,6 +40,12 @@ const addSession = (data, result, res) => {
     });
     Util.httpResponse(res,200,`{"":${s.sessionKey},"ok":${JSON.stringify(result)}}`);
 }
+/**
+ * @description 查找用户
+ * @param {Response} res 
+ * @param {Json} data 微信用户解密数据
+ * @param {Function} notCallback 不存在该uid的用户回调
+ */
 const findUser = (res, data, notCallback) => {
     db.findOne("user",{uid:data.openid},(err,result)=>{
         if(err){
@@ -53,6 +59,11 @@ const findUser = (res, data, notCallback) => {
     });
 }
 /***** Module exports *****/
+/**
+ * @description 微信用户登录
+ * @param search 前台传的参数 由用户通过微信前台接口调用获取 {code: "微信登录临时code",encrypted: "微信用户加密数据", iv: "解密算法初始向量"}
+ *              https://developers.weixin.qq.com/minigame/dev/tutorial/open-ability/login.html
+ */
 exports.login = (rq,res,search) => {
     const code = search.get("code"),
         encrypted = search.get("encrypted"),

@@ -111,6 +111,25 @@ exports.findOne = (document,data,callback) => {
   });
 }
 /**
+ * @description 查找单条数据，并更新数据
+ */
+exports.findOneAndUpdate = (document,filter,data,callback) => {
+  connect((db)=>{
+    db.collection(document).findOneAndUpdate(filter,data,(err,result)=>{
+      if(err){
+        return callback(err,result);
+      }
+      // Util.tryCatch(()=>{
+      //   result.toArray((error, docs)=>{
+          callback(err,result);
+      //   })
+      // },(error)=>{
+      //   log.add(error,"error");
+      // })
+    })
+  });
+}
+/**
  * @description 批量更新数据
  * @param {string} document 数据库表名
  * @param {json} filter 需要修改的数据查找条件

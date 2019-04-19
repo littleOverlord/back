@@ -133,7 +133,12 @@ exports.Session = Session;
  * @param {*} options session状态
  */
 exports.add = (options) => {
-    let ss = create(options);
+    let ss = uidMap[options.uid];
+    if(ss){
+        ss.fresh();
+        return ss;
+    }
+    ss = create(options);
     table[ss.sessionKey] = ss;
     uidMap[ss.uid] = ss;
     return ss;
