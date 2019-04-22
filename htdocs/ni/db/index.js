@@ -50,6 +50,18 @@ exports.init = (cfg) => {
 exports.ObjectID = ObjectID;
 //数据库操作接口
 /**
+ * @description 获取数据文档连接
+ */
+exports.collection = (document, callback) => {
+  connect((db)=>{
+    Util.tryCatch(()=>{
+      callback(db.collection(document));
+    },(error)=>{
+      log.add(error,"error");
+    })
+  });
+}
+/**
  * @description 插入一条数据
  * @param {string} document 数据库表名
  * @param {json} data 该条数据
