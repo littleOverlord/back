@@ -82,14 +82,14 @@ exports.login = (rq,res,search) => {
     // console.log(userName);
     db.findOne("user",{username:userName},(err,result)=>{
         if(err){
-            return Util.httpResponse(res,500,log.clientInfo(500,err.message));
+            return Util.httpResponse(res,200,log.clientInfo(500,err.message));
         }
         if(result){
             if(checkUser(password,result)){
                 return addSession(result,res);
             }
         }
-        Util.httpResponse(res,500,log.clientInfo(500,ERR.ap));
+        Util.httpResponse(res,200,log.clientInfo(500,ERR.ap));
     });
 }
 /**
@@ -104,21 +104,21 @@ exports.regist = (rq,res,search) => {
     // console.log(password);
     db.findOne("user",{username},(err,result)=>{
         if(err){
-            return Util.httpResponse(res,500,log.clientInfo(500,err.message));
+            return Util.httpResponse(res,200,log.clientInfo(500,err.message));
         }
         if(result){
-            return Util.httpResponse(res,500,log.clientInfo(500,ERR.ra));
+            return Util.httpResponse(res,200,log.clientInfo(500,ERR.ra));
         }
         getUid((e,r)=>{
             if(e){
-                return Util.httpResponse(res,500,log.clientInfo(500,e.message));
+                return Util.httpResponse(res,200,log.clientInfo(500,e.message));
             }
             salt = genRandomString(32);
             password = sha512(password,salt);
             console.log(r);
             db.insertOne("user",{uid:r.value.value,username,password,salt,from},(er,rr)=>{
                 if(er){
-                    return Util.httpResponse(res,500,log.clientInfo(500,er.message));
+                    return Util.httpResponse(res,200,log.clientInfo(500,er.message));
                 }
                 // console.log(rr);
                 addSession(rr.ops[0],res);
