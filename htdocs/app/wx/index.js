@@ -21,8 +21,12 @@ const WXBizDataCrypt = require('./WXBizDataCrypt')
  * @param {*} code 微信临时登录凭证 wx.login()
  * @param {*} callback 
  */
-const code2Session = (code,callback) => {
-    Client.get(`https://api.weixin.qq.com/sns/jscode2session?appid=${config.appId}&secret=${config.appSecret}&js_code=${code}&grant_type=authorization_code`,(error,data) => {
+const code2Session = (code,gamename,callback) => {
+    let cfg = config[gamename];
+    if(!cfg){
+        return callback(`Don't have ${gamename} game`,null); 
+    }
+    Client.get(`https://api.weixin.qq.com/sns/jscode2session?appid=${cfg.appId}&secret=${cfg.appSecret}&js_code=${code}&grant_type=authorization_code`,(error,data) => {
         
         callback(error,data);
     });
@@ -36,7 +40,8 @@ const code2Session = (code,callback) => {
 const addSession = (data, result, res) => {
     let s = Session.add({
         session_wx: data.session_key,
-        uid: data.openid
+        uid: data.openid,
+        gamename: result.gamename
     });
     Util.httpResponse(res,200,`{"":${s.sessionKey},"ok":${JSON.stringify(result)}}`);
 }
@@ -67,9 +72,10 @@ const findUser = (res, data, notCallback) => {
 exports.login = (rq,res,search) => {
     const code = search.get("code"),
         encrypted = search.get("encrypted"),
+        gamename = search.get("gamename"),
         iv = search.get("iv");
     let pc;
-    code2Session(code,(error,data)=>{
+    code2Session(code,gamename,(error,data)=>{
         if(error){
             return Util.httpResponse(res,500,log.clientInfo(500,error.message));
         }
@@ -81,7 +87,7 @@ exports.login = (rq,res,search) => {
             // console.log(encrypted,iv);
             pc = new WXBizDataCrypt(config.appId, data.session_key);
             let _data = pc.decryptData(encrypted , iv);
-            db.insertOne("user",{uid:_data.openId,from:"wx",name:_data.nickName,head:_data.avatarUrl,info:_data},(e,r)=>{
+            db.insertOne("user",{uid:_data.openId,from:"wx",name:_data.nickName,gamename,head:_data.avatarUrl,info:_data},(e,r)=>{
                 if(e){
                     return Util.httpResponse(res,500,log.clientInfo(500,e.message));
                 }

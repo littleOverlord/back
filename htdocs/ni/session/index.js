@@ -106,8 +106,8 @@ const loop = () => {
     for(let k in table){
         if(Date.now() >= table[k].expire){
             addCache(table[k]);
-            delete table[k];
             delete uidMap[table[k].uid];
+            delete table[k];
         }
     }
     setTimeout(loop,LASTTIME/2);

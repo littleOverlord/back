@@ -1,4 +1,10 @@
 {
-    "appId": "wxad18629d00712016",
-    "appSecret": "5b1adddfb53938f13f34dad28ac51ee5"
+    "tulong":{
+        "appId": "wxad18629d00712016",
+        "appSecret": "5b1adddfb53938f13f34dad28ac51ee5"
+    },
+    "yldj":{
+        "appId": "wx72c4894e567fd04d",
+        "appSecret": "525d6fd5ad5a671ffb100340e8259ac9"
+    }
 }

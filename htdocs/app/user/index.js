@@ -26,7 +26,8 @@ const ERR = {
  */
 const addSession = (result, res) => {
     let s = Session.add({
-        uid: result.uid
+        uid: result.uid,
+        gamename: result.gamename
     });
     Util.httpResponse(res,200,`{"":"${s.sessionKey}","ok":{"uid":${result.uid},"username":"${result.username}","from":"${result.from||""}"}}`);
 }
@@ -37,7 +38,8 @@ const addSession = (result, res) => {
  */
 const getUid = (callback) => {
     db.collection("global",(con)=>{
-        con.findOneAndUpdate({key:"uid"},{$set:{key:"uid"}, $inc : { "value" : 1 }},{upsert:true, returnNewDocument : true},(err,result)=>{
+        con.findOneAndUpdate({key:"uid"},{$set:{key:"uid",value:1}, $inc : { "value" : 1 }},{upsert:true, returnNewDocument : true},(err,result)=>{
+            console.log(r);
             callback(err,result);
         })
     })
@@ -100,6 +102,7 @@ exports.regist = (rq,res,search) => {
     let username = search.get("name"),
         password = search.get("psw"),
         from = search.get("from"),
+        gamename = search.get("gamename"),
         salt;
     // console.log(password);
     db.findOne("user",{username},(err,result)=>{
@@ -115,8 +118,8 @@ exports.regist = (rq,res,search) => {
             }
             salt = genRandomString(32);
             password = sha512(password,salt);
-            console.log(r);
-            db.insertOne("user",{uid:r.value.value,username,password,salt,from},(er,rr)=>{
+            
+            db.insertOne("user",{uid:r.value.value,username,password,salt,from,gamename},(er,rr)=>{
                 if(er){
                     return Util.httpResponse(res,200,log.clientInfo(500,er.message));
                 }
