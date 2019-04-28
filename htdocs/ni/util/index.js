@@ -40,4 +40,19 @@ exports.httpResponse = (res,code,data,contentType) => {
     res.write(data);
     res.end();
 }
+/**
+ * @description 获取新的uid
+ */
+exports.getUid = (db,gamename,callback) => {
+    db.collection("userid",(con)=>{
+        con.findOneAndUpdate({gamename},{$set:{gamename}, $inc : { "uid" : 1 }},{upsert:true, returnNewDocument : true},(err,result)=>{
+            console.log(err,result);
+            let value = err?null:result.value;
+            if(!err && !value){
+                value = {gamename,uid:1};
+            }
+            callback(err,value);
+        })
+    })
+}
 /***** local running ******/

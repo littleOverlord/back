@@ -41,6 +41,7 @@ const addSession = (data, result, res) => {
     let s = Session.add({
         session_wx: data.session_key,
         uid: data.openid,
+        username:data.openid,
         gamename: result.gamename
     });
     Util.httpResponse(res,200,`{"":${s.sessionKey},"ok":${JSON.stringify(result)}}`);
@@ -49,10 +50,10 @@ const addSession = (data, result, res) => {
  * @description 查找用户
  * @param {Response} res 
  * @param {Json} data 微信用户解密数据
- * @param {Function} notCallback 不存在该uid的用户回调
+ * @param {Function} notCallback 不存在该username的用户回调
  */
 const findUser = (res, data, notCallback) => {
-    db.findOne("user",{uid:data.openid},(err,result)=>{
+    db.findOne("user",{username:data.openid},(err,result)=>{
         if(err){
             return Util.httpResponse(res,500,log.clientInfo(500,err.message));
         }
@@ -87,11 +88,16 @@ exports.login = (rq,res,search) => {
             // console.log(encrypted,iv);
             pc = new WXBizDataCrypt(config.appId, data.session_key);
             let _data = pc.decryptData(encrypted , iv);
-            db.insertOne("user",{uid:_data.openId,from:"wx",name:_data.nickName,gamename,head:_data.avatarUrl,info:_data},(e,r)=>{
+            Util.getUid(db,gamename,(e,r)=>{
                 if(e){
-                    return Util.httpResponse(res,500,log.clientInfo(500,e.message));
+                    return Util.httpResponse(res,200,log.clientInfo(500,e.message));
                 }
-                addSession(data,r,res);
+                db.insertOne("user",{uid:r.uid,username:_data.openId,from:"wx",name:_data.nickName,gamename,head:_data.avatarUrl,info:_data},(e,r)=>{
+                    if(e){
+                        return Util.httpResponse(res,500,log.clientInfo(500,e.message));
+                    }
+                    addSession(data,r,res);
+                })
             })
         })
     })

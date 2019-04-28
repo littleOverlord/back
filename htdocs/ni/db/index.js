@@ -25,6 +25,23 @@ const connect = (callback) => {
     callback(dbBase);
 }
 /**
+ * @description 创建数据库索引
+ */
+const createIndex = (cfg, callback) => {
+  let count = 0;
+  for(let k in cfg){
+    count += 1;
+    dbBase.collection(k).createIndex(cfg[k].keys,{
+      background:true
+    },()=>{
+      count -= 1;
+      if(count == 0){
+        callback();
+      }
+    })
+  }
+}
+/**
  * @description 关闭数据库连接
  */
 const close = () => {
@@ -43,7 +60,9 @@ exports.init = (cfg) => {
           return log.add(err,"mongodb");
         }
         dbBase = client.db(dbName);
-        console.log("Connected successfully to server");
+        createIndex(cfg.db.index,()=>{
+          console.log("Connected successfully to server");
+        })
     });
 }
 //_id数据查询对象 new ObjectID(_id)

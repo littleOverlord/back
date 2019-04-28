@@ -13,7 +13,12 @@
         }
     },
     "db":{
-        "url":"mongodb://localhost:29817"
+        "url":"mongodb://localhost:29817",
+        "index":{
+            "userid":{"keys":{"gamename":1}},
+            "user":{"keys":{"username":1,"uid":1}},
+            "rank_yldj":{"keys":{"uid":1,"score":1}}
+        }
     },
     "static": {
         "dir":"static",

@@ -27,22 +27,10 @@ const ERR = {
 const addSession = (result, res) => {
     let s = Session.add({
         uid: result.uid,
+        username: result.username,
         gamename: result.gamename
     });
     Util.httpResponse(res,200,`{"":"${s.sessionKey}","ok":{"uid":${result.uid},"username":"${result.username}","from":"${result.from||""}"}}`);
-}
-/**
- * @description 获取最新uid
- * @param {*} res 
- * @param {*} callback 
- */
-const getUid = (callback) => {
-    db.collection("global",(con)=>{
-        con.findOneAndUpdate({key:"uid"},{$set:{key:"uid",value:1}, $inc : { "value" : 1 }},{upsert:true, returnNewDocument : true},(err,result)=>{
-            console.log(r);
-            callback(err,result);
-        })
-    })
 }
 /**
  * @description 检查用户输入密码是否正确
@@ -112,14 +100,14 @@ exports.regist = (rq,res,search) => {
         if(result){
             return Util.httpResponse(res,200,log.clientInfo(500,ERR.ra));
         }
-        getUid((e,r)=>{
+        Util.getUid(db,gamename,(e,r)=>{
             if(e){
                 return Util.httpResponse(res,200,log.clientInfo(500,e.message));
             }
             salt = genRandomString(32);
             password = sha512(password,salt);
             
-            db.insertOne("user",{uid:r.value.value,username,password,salt,from,gamename},(er,rr)=>{
+            db.insertOne("user",{uid:r.uid,username,password,salt,from,gamename,name:"",head:"",info:""},(er,rr)=>{
                 if(er){
                     return Util.httpResponse(res,200,log.clientInfo(500,er.message));
                 }
