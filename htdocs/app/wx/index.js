@@ -44,8 +44,7 @@ const addSession = (data, result, res) => {
         username:data.openid,
         gamename: result.gamename
     });
-    console.log(result);
-    Util.httpResponse(res,200,`{"":“${s.sessionKey}”,"ok":${JSON.stringify(result)}}`);
+    Util.httpResponse(res,200,`{"":"${s.sessionKey}","ok":{"uid":${result.uid},"username":"${result.username}","from":"${result.from||""}"}}`);
 }
 /**
  * @description 查找用户
