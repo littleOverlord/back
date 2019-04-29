@@ -86,7 +86,7 @@ exports.login = (rq,res,search) => {
         }
         findUser(res,data,()=>{
             // console.log(encrypted,iv);
-            pc = new WXBizDataCrypt(config.appId, data.session_key);
+            pc = new WXBizDataCrypt(config[gamename].appId, data.session_key);
             let _data = pc.decryptData(encrypted , iv);
             Util.getUid(db,gamename,(e,r)=>{
                 if(e){
