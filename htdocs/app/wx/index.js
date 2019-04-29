@@ -40,11 +40,12 @@ const code2Session = (code,gamename,callback) => {
 const addSession = (data, result, res) => {
     let s = Session.add({
         session_wx: data.session_key,
-        uid: data.openid,
+        uid: result.uid,
         username:data.openid,
         gamename: result.gamename
     });
-    Util.httpResponse(res,200,`{"":${s.sessionKey},"ok":${JSON.stringify(result)}}`);
+    console.log(result);
+    Util.httpResponse(res,200,`{"":“${s.sessionKey}”,"ok":${JSON.stringify(result)}}`);
 }
 /**
  * @description 查找用户
@@ -96,7 +97,7 @@ exports.login = (rq,res,search) => {
                     if(e){
                         return Util.httpResponse(res,500,log.clientInfo(500,e.message));
                     }
-                    addSession(data,r,res);
+                    addSession(data,r.ops[0],res);
                 })
             })
         })

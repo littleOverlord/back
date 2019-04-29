@@ -12,18 +12,26 @@ const Util = require("../../ni/util");
 /***** Module exports *****/
 exports.test = (req, res, search) => {
     console.log(search);
-    db.find("test",{},(error,data)=>{
-        let r,c = 200;
-        if(error){
-            console.log(error);
-            c = 500;
-            r = log.clientInfo(c,error.message);
-        }else{
-            r = JSON.stringify(data);
-        }
-        Util.httpResponse(res,c,r);
+    // db.find("test",{},(error,data)=>{
+    //     let r,c = 200;
+    //     if(error){
+    //         console.log(error);
+    //         c = 500;
+    //         r = log.clientInfo(c,error.message);
+    //     }else{
+    //         r = JSON.stringify(data);
+    //     }
+    //     Util.httpResponse(res,c,r);
+    // })
+    db.collection("test",(conn)=>{
+        conn.insertOne({"uid":1,"rid":1},(err,r)=>{
+            if(err){
+                return;
+            }
+            console.log(err,r);
+            Util.httpResponse(res,200,r);
+        })
     })
-    
 }
 exports.delete = (req, res, search) => {
     const id = search.get("_id");
