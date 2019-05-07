@@ -50,7 +50,7 @@ const close = () => {
 }
 
 /***** Module exports *****/
-exports.init = (cfg) => {
+exports.init = (cfg,callback) => {
     dbName = cfg.app.name;
     dbUrl = cfg.db.url;
 
@@ -61,7 +61,9 @@ exports.init = (cfg) => {
         }
         dbBase = client.db(dbName);
         createIndex(cfg.db.index,()=>{
-          console.log("Connected successfully to server");
+          if(callback){
+            callback();
+          }
         })
     });
 }

@@ -47,3 +47,7 @@ process.on('SIGINT', (code) => {
   console.log(`exit code ${code}`);
   process.exit(0);
 });
+//监听未捕获的异常
+process.on('uncaughtException', (err) => {
+  log.add(err,"error");
+});
