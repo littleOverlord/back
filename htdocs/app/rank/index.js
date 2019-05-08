@@ -10,6 +10,12 @@ const Util = require("../../ni/util");
 /***** Module variables *****/
 
 /***** Module exports *****/
+/**
+ * @description 模块初始化调用,由 NI.initMod() 完成
+ */
+exports.init = () => {
+
+}
 exports.add = (req, res, search) => {
     console.log(search);
     let uid = Number(search.get("uid")),

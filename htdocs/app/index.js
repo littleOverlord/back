@@ -15,11 +15,7 @@ const db = require("../ni/db");
 //config
 const config = require("./cfg.json");
 /***** Module variables *****/
-const processType = {
-    "master":0,
-    "http":1,
-    "cacl":2
-}
+
 /***** Module exports *****/
 
 /***** local running ******/

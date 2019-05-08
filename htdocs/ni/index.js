@@ -19,7 +19,7 @@ class NI{
         return path.resolve(NI.absPath,rPath);
     }
     /**
-     * @description 初始化某个路径下的模块，必须以文件夹作为模块单位
+     * @description 初始化某个路径下的模块，必须以文件夹作为模块单位，数据库建立连接之后调用
      * @param { string } dir  NI.absPath下的目录 like: "app"||"ni"
      */
     static initMod(dir){

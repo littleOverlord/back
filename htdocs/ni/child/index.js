@@ -14,6 +14,10 @@ const { exec } = require('child_process');
 //cfg
 
 /***** Module variables *****/
+const children = {};
+const processType = {
+    "cacl":1
+}
 class Child{
     constructor(worker){
         
