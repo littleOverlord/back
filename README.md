@@ -3,24 +3,25 @@ nodejs 服务器
 
 ## 开始
 
-- 环境
+### 环境
 
 安装nodejs，[官方下载](http://nodejs.cn/download/)
 
-- 项目克隆
+### 项目克隆
 
 ```
 > git clone https://github.com/littleOverlord/back.git
 ```
 如果你还没有安装git，请点击[这里](https://git-scm.com/downloads)
-- 进入项目根目录，安装依赖
+
+### 进入项目根目录，安装依赖
 ```
 > npm i
 or 
 > npm install
 ```
 
-- 启动
+### 启动
 ```
 > npm run start
 ```
