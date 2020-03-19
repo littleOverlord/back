@@ -1,27 +1,23 @@
 {
-  "name": "back",
-  "version": "0.0.1",
-  "description": "web server",
-  "main": "htdocs/app/index.js",
+  "name": "koaserver",
+  "version": "0.1.1",
+  "description": "this is a web server by koa",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cd htdocs/app && node index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/littleOverlord/back.git"
+    "start": "node index.js"
   },
   "keywords": [
-    "nodejs",
-    "webserver"
+    "koa",
+    "server"
   ],
   "author": "tangdandan",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/littleOverlord/back/issues"
-  },
-  "homepage": "https://github.com/littleOverlord/back#readme",
   "dependencies": {
-    "mongodb": "^3.1.13"
+    "koa": "^2.11.0",
+    "koa-body": "^4.1.1",
+    "koa-bodyparser": "^4.2.1",
+    "koa-multer": "^1.0.2",
+    "koa-router": "^8.0.8",
+    "koa-static": "^5.0.0"
   }
 }
